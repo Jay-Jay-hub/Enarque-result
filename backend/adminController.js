@@ -1,4 +1,5 @@
 const db = require('./db')
+const bcrypt = require('bcryptjs')
 
 const resourceTables = {
 	annees: 'annees',
@@ -333,6 +334,48 @@ const activatePvSemestre = async (req, res, next) => {
 	}
 }
 
+const updateCompte = async (req, res, next) => {
+	try {
+		const { motDePasseActuel, nouvelEmail, nouveauMotDePasse } = req.body
+		if (!motDePasseActuel) {
+			return res.status(400).json({ error: 'Le mot de passe actuel est requis pour confirmer les changements.' })
+		}
+		const [rows] = await db.query(
+			'SELECT id, email, mot_de_passe_hash FROM administrateurs WHERE id = ? LIMIT 1',
+			[req.admin.id]
+		)
+		if (!rows[0] || !(await bcrypt.compare(motDePasseActuel, rows[0].mot_de_passe_hash))) {
+			return res.status(401).json({ error: 'Mot de passe actuel incorrect.' })
+		}
+
+		const updates = []
+		const values = []
+		if (nouvelEmail && nouvelEmail.trim().toLowerCase() !== rows[0].email) {
+			updates.push('email = ?')
+			values.push(nouvelEmail.trim().toLowerCase())
+		}
+		if (nouveauMotDePasse) {
+			if (nouveauMotDePasse.length < 8) {
+				return res.status(400).json({ error: 'Le nouveau mot de passe doit contenir au moins 8 caractères.' })
+			}
+			const hash = await bcrypt.hash(nouveauMotDePasse, 10)
+			updates.push('mot_de_passe_hash = ?')
+			values.push(hash)
+		}
+		if (!updates.length) {
+			return res.status(400).json({ error: 'Aucune modification à enregistrer.' })
+		}
+
+		values.push(req.admin.id)
+		await db.query(`UPDATE administrateurs SET ${updates.join(', ')} WHERE id = ?`, values)
+
+		const [updatedRows] = await db.query('SELECT id, email FROM administrateurs WHERE id = ?', [req.admin.id])
+		res.json(updatedRows[0])
+	} catch (error) {
+		next(error)
+	}
+}
+
 module.exports = {
 	listResource,
 	createResource,
@@ -348,5 +391,6 @@ module.exports = {
 	listPvSemestres,
 	createPvSemestre,
 	deletePvSemestre,
-	activatePvSemestre
+	activatePvSemestre,
+	updateCompte
 }

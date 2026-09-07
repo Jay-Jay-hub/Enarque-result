@@ -48,6 +48,7 @@ const definitions = {
 }
 
 router.get('/filieres', controller.listFilieres)
+router.patch('/compte', controller.updateCompte)
 router.get('/specialites', controller.listSpecialites)
 router.get('/semestres', controller.listSemestres)
 router.get('/sessions', controller.listResource('sessions'))

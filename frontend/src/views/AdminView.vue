@@ -509,6 +509,38 @@
             </div>
           </section>
 
+          <!-- 7. MON COMPTE -->
+          <section v-if="activeTab === 'compte'" class="space-y-6">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 max-w-lg">
+              <h3 class="text-xs font-extrabold text-slate-900 uppercase">Modifier mes identifiants</h3>
+              <p class="text-[11px] text-slate-500">
+                Le mot de passe actuel est requis pour confirmer tout changement. Laisse un champ vide pour ne pas le modifier.
+              </p>
+              <form @submit.prevent="modifierCompte" class="space-y-4">
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Mot de passe actuel : <span class="text-rose-600">*</span></label>
+                  <input type="password" v-model="compteForm.motDePasseActuel" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none" />
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Nouvel email (optionnel) :</label>
+                  <input type="email" v-model="compteForm.nouvelEmail" placeholder="Laisser vide pour ne pas changer" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none" />
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Nouveau mot de passe (optionnel, 8 caractères min.) :</label>
+                  <input type="password" v-model="compteForm.nouveauMotDePasse" placeholder="Laisser vide pour ne pas changer" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none" />
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Confirmer le nouveau mot de passe :</label>
+                  <input type="password" v-model="compteForm.confirmationMotDePasse" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none" />
+                </div>
+                <p v-if="compteMessage" :class="compteMessageOk ? 'text-emerald-700' : 'text-rose-600'" class="text-xs font-bold">{{ compteMessage }}</p>
+                <button type="submit" class="w-full py-3.5 rounded-2xl bg-teal-900 hover:bg-teal-950 text-white text-xs font-extrabold uppercase tracking-widest cursor-pointer transition-all">
+                  Enregistrer les modifications
+                </button>
+              </form>
+            </div>
+          </section>
+
         </main>
       </div>
 
@@ -597,7 +629,8 @@ const adminTabs = ref([
   { id: 'filieres', label: 'Filières & Spécialités' },
   { id: 'ues', label: 'Gestion des UE' },
   { id: 'publications', label: 'Publications & Versions' },
-  { id: 'pv-semestres', label: 'PV Définitifs (Semestre)' }
+  { id: 'pv-semestres', label: 'PV Définitifs (Semestre)' },
+  { id: 'compte', label: 'Mon compte' }
 ])
 
 const currentTabTitle = computed(() => {
@@ -933,6 +966,42 @@ const supprimerPvSemestre = async (id) => {
     operationError.value = ''
   } catch (error) {
     afficherErreur(error)
+  }
+}
+
+// --- MON COMPTE (modification des identifiants) ---
+const compteForm = ref({
+  motDePasseActuel: '',
+  nouvelEmail: '',
+  nouveauMotDePasse: '',
+  confirmationMotDePasse: ''
+})
+const compteMessage = ref('')
+const compteMessageOk = ref(false)
+
+const modifierCompte = async () => {
+  compteMessage.value = ''
+  if (compteForm.value.nouveauMotDePasse && compteForm.value.nouveauMotDePasse !== compteForm.value.confirmationMotDePasse) {
+    compteMessageOk.value = false
+    compteMessage.value = 'La confirmation du nouveau mot de passe ne correspond pas.'
+    return
+  }
+  try {
+    const response = await axios.patch(`${apiUrl}/compte`, {
+      motDePasseActuel: compteForm.value.motDePasseActuel,
+      nouvelEmail: compteForm.value.nouvelEmail || undefined,
+      nouveauMotDePasse: compteForm.value.nouveauMotDePasse || undefined
+    })
+    compteMessageOk.value = true
+    compteMessage.value = `Identifiants mis à jour avec succès (email : ${response.data.email}).`
+    emailInput.value = response.data.email
+    compteForm.value.motDePasseActuel = ''
+    compteForm.value.nouvelEmail = ''
+    compteForm.value.nouveauMotDePasse = ''
+    compteForm.value.confirmationMotDePasse = ''
+  } catch (error) {
+    compteMessageOk.value = false
+    compteMessage.value = error.response?.data?.error || 'Modification impossible. Vérifiez le serveur backend.'
   }
 }
 </script>
