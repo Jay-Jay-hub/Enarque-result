@@ -159,7 +159,7 @@
             <!-- Formulaire d'ajout de spécialité -->
             <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
               <h3 class="text-xs font-extrabold text-slate-900 uppercase">Ajouter une Spécialité à une Filière</h3>
-              <form @submit.prevent="ajouterSpecialite" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+              <form @submit.prevent="ajouterSpecialite" class="grid grid-cols-1 sm:grid-cols-5 gap-4">
                 <div>
                   <label class="text-xs font-bold text-slate-700 block mb-1">Filière ciblée :</label>
                   <select v-model="specialiteForm.filiereCode" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none">
@@ -174,8 +174,12 @@
                   </select>
                 </div>
                 <div>
-                  <label class="text-xs font-bold text-slate-700 block mb-1">Code & Nom :</label>
-                  <input type="text" v-model="specialiteForm.nom" placeholder="ex: ARCHI - Archivistique" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none" />
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Code :</label>
+                  <input type="text" v-model="specialiteForm.code" placeholder="ex: ARCHI" required maxlength="10" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none" />
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Nom complet :</label>
+                  <input type="text" v-model="specialiteForm.nom" placeholder="ex: Archivistique" required class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs outline-none" />
                 </div>
                 <div class="flex items-end">
                   <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-900 hover:bg-emerald-950 text-white text-xs font-bold uppercase cursor-pointer">Ajouter</button>
@@ -197,11 +201,11 @@
                         <li class="text-xs text-slate-500 italic">Tronc commun (Pas de spécialité)</li>
                       </template>
                       <template v-else>
-                        <li v-for="s in mockSpecialites.filter(s => s.filiere === f.code && s.niveau === niv)" :key="s.code" class="flex justify-between items-center text-xs py-1">
-                          <span class="font-bold text-slate-700">{{ s.code }} - {{ s.nom }}</span>
-                          <button @click="supprimerSpecialite(s.code)" class="text-rose-600 font-bold hover:underline cursor-pointer">Supprimer</button>
+                        <li v-for="s in mockSpecialites.filter(s => s.filiere === f.code && niveauRang(s.niveau) <= niveauRang(niv))" :key="s.code" class="flex justify-between items-center text-xs py-1">
+                          <span class="font-bold text-slate-700">{{ s.code }} - {{ s.nom }} <span v-if="s.niveau !== niv" class="text-slate-400 font-normal">(depuis {{ s.niveau }})</span></span>
+                          <button v-if="s.niveau === niv" @click="supprimerSpecialite(s.code)" class="text-rose-600 font-bold hover:underline cursor-pointer">Supprimer</button>
                         </li>
-                        <li v-if="mockSpecialites.filter(s => s.filiere === f.code && s.niveau === niv).length === 0" class="text-xs text-slate-400 italic">
+                        <li v-if="mockSpecialites.filter(s => s.filiere === f.code && niveauRang(s.niveau) <= niveauRang(niv)).length === 0" class="text-xs text-slate-400 italic">
                           Aucune spécialité configurée pour ce niveau.
                         </li>
                       </template>
@@ -630,14 +634,16 @@ const supprimerAnnee = async (id) => {
 const specialiteForm = ref({
   filiereCode: 'STID',
   niveau: 'L2',
+  code: '',
   nom: ''
 })
 
+const niveauRang = (niveau) => ({ L1: 1, L2: 2, L3: 3 }[niveau] || 0)
+
 const ajouterSpecialite = async () => {
-  if (specialiteForm.value.nom.trim()) {
-    const parts = specialiteForm.value.nom.split('-')
-    const code = parts[0] ? parts[0].trim().toUpperCase() : 'SPEC'
-    const nomComplet = parts[1] ? parts[1].trim() : specialiteForm.value.nom.trim()
+  if (specialiteForm.value.code.trim() && specialiteForm.value.nom.trim()) {
+    const code = specialiteForm.value.code.trim().toUpperCase()
+    const nomComplet = specialiteForm.value.nom.trim()
 
     try {
       const filiere = mockFilieres.value.find(item => item.code === specialiteForm.value.filiereCode)
@@ -648,6 +654,7 @@ const ajouterSpecialite = async () => {
         niveau_min: specialiteForm.value.niveau
       })
       mockSpecialites.value.push({ ...response.data, filiere: specialiteForm.value.filiereCode, niveau: specialiteForm.value.niveau })
+      specialiteForm.value.code = ''
       specialiteForm.value.nom = ''
     } catch (error) {
       afficherErreur(error)
