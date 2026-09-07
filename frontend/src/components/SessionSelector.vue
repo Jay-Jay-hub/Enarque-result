@@ -58,7 +58,7 @@
           <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
             <span class="text-xs text-slate-400">Document officiel PDF</span>
             <a 
-              :href="`http://localhost:5000/uploads/${pub.fichier}`" 
+              :href="`${BASE_URL}/uploads/${pub.fichier}`" 
               target="_blank" 
               class="px-4 py-2 rounded-xl bg-emerald-900 hover:bg-emerald-950 text-white text-xs font-bold shadow transition-all flex items-center gap-2 cursor-pointer"
             >
@@ -87,6 +87,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
+import { API_URL, BASE_URL } from '../config.js'
 
 const route = useRoute()
 const currentUeId = computed(() => route.query.ueId || null)
@@ -102,7 +103,7 @@ const fetchPublications = async () => {
   if (!currentUeId.value) return
   loading.value = true
   try {
-    const response = await axios.get(`http://localhost:5000/api/publications`, {
+    const response = await axios.get(`${API_URL}/publications`, {
       params: {
         annee_id: currentAnneeId.value,
         semestre_id: currentSemestreId.value,

@@ -68,6 +68,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { mockAnneesAcademiques } from '../data/mockData.js'
 import axios from 'axios'
+import { API_URL, BASE_URL } from '../config.js'
 
 const router = useRouter()
 
@@ -85,7 +86,7 @@ const availableYears = computed(() => sortedYears.value.map((year, index) => ({
 
 onMounted(async () => {
   try {
-    const response = await axios.get('http://localhost:5000/api/annees')
+    const response = await axios.get(`${API_URL}/annees`)
     mockAnneesAcademiques.value = response.data.sort((first, second) => {
       const firstStart = Number.parseInt(first.libelle, 10) || 0
       const secondStart = Number.parseInt(second.libelle, 10) || 0

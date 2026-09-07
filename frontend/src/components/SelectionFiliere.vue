@@ -83,6 +83,7 @@ import BreadcrumbNav from '../components/BreadcrumbNav.vue'
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
+import { API_URL, BASE_URL } from '../config.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -114,7 +115,7 @@ const filieresList = ref([
 
 onMounted(async () => {
   try {
-    const response = await axios.get('http://localhost:5000/api/filieres')
+    const response = await axios.get(`${API_URL}/filieres`)
     filieresList.value = response.data.map(filiere => ({
       ...filiere,
       name: filiere.nom,

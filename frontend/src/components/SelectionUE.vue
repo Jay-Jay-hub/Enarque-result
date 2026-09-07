@@ -26,6 +26,7 @@
 import BreadcrumbNav from '../components/BreadcrumbNav.vue'
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
+import { API_URL, BASE_URL } from '../config.js'
 
 const props = defineProps({
   anneeId: { type: Number, required: true },
@@ -50,7 +51,7 @@ const fetchUes = async () => {
     }
     if (props.specialiteId) params.specialite_id = props.specialiteId
 
-    const response = await axios.get('http://localhost:5000/api/ues', { params })
+    const response = await axios.get(`${API_URL}/ues`, { params })
     ues.value = response.data
   } catch (error) {
     console.error("Erreur lors de la récupération des UEs:", error)

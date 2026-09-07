@@ -83,6 +83,7 @@ import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { mockSpecialites } from '../data/mockData.js'
 import axios from 'axios'
+import { API_URL, BASE_URL } from '../config.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -93,7 +94,7 @@ const currentNiveau = computed(() => route.query.niveau || 'L2')
 
 onMounted(async () => {
   try {
-    const response = await axios.get('http://localhost:5000/api/specialites')
+    const response = await axios.get(`${API_URL}/specialites`)
     mockSpecialites.value = response.data.map(specialite => ({
       ...specialite,
       niveau: specialite.niveau_min

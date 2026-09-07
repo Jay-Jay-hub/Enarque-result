@@ -103,6 +103,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { mockUes } from '../data/mockData.js'
 import axios from 'axios'
+import { API_URL, BASE_URL } from '../config.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -112,7 +113,7 @@ const pvSemestresList = ref([])
 
 onMounted(async () => {
   try {
-    const response = await axios.get('http://localhost:5000/api/ues')
+    const response = await axios.get(`${API_URL}/ues`)
     apiUes.value = response.data.map(ue => ({
       ...ue,
       filiere: String(ue.filiere || '').trim().toUpperCase(),
@@ -127,10 +128,10 @@ onMounted(async () => {
   }
 
   try {
-    const pvResponse = await axios.get('http://localhost:5000/api/pv-semestres')
+    const pvResponse = await axios.get(`${API_URL}/pv-semestres`)
     pvSemestresList.value = pvResponse.data.map(pv => ({
       ...pv,
-      fileUrl: `http://localhost:5000${pv.fileUrl}`
+      fileUrl: `${BASE_URL}${pv.fileUrl}`
     }))
   } catch (error) {
     console.warn('PV définitifs indisponibles.', error)

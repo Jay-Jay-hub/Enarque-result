@@ -109,7 +109,7 @@ import { mockUes, mockPublications } from '../data/mockData.js'
 import axios from 'axios'
 
 const route = useRoute()
-const apiUrl = 'http://localhost:5000'
+import { BASE_URL as apiUrl } from '../config.js'
 const apiUes = ref(null)
 const apiPublications = ref(null)
 const loading = ref(true)

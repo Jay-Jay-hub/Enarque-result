@@ -166,6 +166,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import { API_URL, BASE_URL } from '../config.js'
 
 const router = useRouter()
 
@@ -189,12 +190,12 @@ const documentsList = ref([
 onMounted(async () => {
   try {
     const [anneesRes, filieresRes, semestresRes, sessionsRes, publicationsRes, pvRes] = await Promise.all([
-      axios.get('http://localhost:5000/api/annees'),
-      axios.get('http://localhost:5000/api/filieres'),
-      axios.get('http://localhost:5000/api/semestres'),
-      axios.get('http://localhost:5000/api/sessions'),
-      axios.get('http://localhost:5000/api/publications'),
-      axios.get('http://localhost:5000/api/pv-semestres')
+      axios.get(`${API_URL}/annees`),
+      axios.get(`${API_URL}/filieres`),
+      axios.get(`${API_URL}/semestres`),
+      axios.get(`${API_URL}/sessions`),
+      axios.get(`${API_URL}/publications`),
+      axios.get(`${API_URL}/pv-semestres`)
     ])
 
     anneesDisponibles.value = anneesRes.data
@@ -209,7 +210,7 @@ onMounted(async () => {
       filiere_code: publication.filiere || '',
       niveau: publication.niveau || '',
       session_type: publication.session,
-      file_url: `http://localhost:5000${publication.fileUrl}`
+      file_url: `${BASE_URL}${publication.fileUrl}`
     }))
 
     const pvSemestres = pvRes.data
@@ -221,7 +222,7 @@ onMounted(async () => {
         filiere_code: pv.filiere || '',
         niveau: pv.niveau || '',
         session_type: 'Procès-verbaux définitifs',
-        file_url: `http://localhost:5000${pv.fileUrl}`
+        file_url: `${BASE_URL}${pv.fileUrl}`
       }))
 
     documentsList.value = [...publications, ...pvSemestres]

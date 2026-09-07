@@ -531,7 +531,7 @@ const passwordInput = ref('')
 const emailInput = ref('admin@enarque.local')
 const loginError = ref('')
 const operationError = ref('')
-const apiUrl = 'http://localhost:5000/api'
+import { API_URL as apiUrl } from '../config.js'
 
 const semestres = ref([])
 
