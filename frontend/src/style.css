@@ -1,0 +1,42 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+@theme {
+  --color-ena-green: #046a38;  /* Vert institutionnel ENA */
+  --color-ena-red: #e20613;    /* Rouge drapeau / accent */
+  --color-ena-gold: #ffd100;   /* Or / Jaune */
+  --color-ena-dark: #0f172a;   /* Fond sombre administration */
+}
+
+/* Styles globaux pour la plateforme Enarque */
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  margin: 0;
+  padding: 0;
+}
+
+/* Animations globales */
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient-move {
+  animation: gradientMove 12s ease infinite;
+}
+
+@keyframes dotsBlink {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.8; }
+}
+
+.animate-dots-blink {
+  animation: dotsBlink 3s ease-in-out infinite;
+}
