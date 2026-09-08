@@ -146,7 +146,7 @@ const pvDefinitif = computed(() => {
       String(pv.niveau || '').trim().toUpperCase() === String(route.query.niveau || '').trim().toUpperCase() &&
       String(pv.semestre || '').trim().toUpperCase() === String(route.query.semestre || '').trim().toUpperCase() &&
       String(pv.annee || '').trim() === String(route.query.annee || '').trim()
-    const matchSpecialite = (route.query.niveau === 'L1' || route.query.filiere === 'SG')
+    const matchSpecialite = !pv.specialite || (route.query.niveau === 'L1' || route.query.filiere === 'SG')
       ? true
       : String(pv.specialite || '') === String(route.query.specialite || '')
     return matchBase && matchSpecialite
@@ -159,7 +159,7 @@ const filteredUes = computed(() => {
     const matchFiliere = String(ue.filiere).trim().toUpperCase() === String(route.query.filiere || '').trim().toUpperCase()
     const matchNiveau = String(ue.niveau).trim().toUpperCase() === String(route.query.niveau || '').trim().toUpperCase()
     const matchSemestre = String(ue.semestre).trim().toUpperCase() === String(route.query.semestre || '').trim().toUpperCase()
-    const matchSpecialite = (route.query.niveau === 'L1' || route.query.filiere === 'SG')
+    const matchSpecialite = !ue.specialite || (route.query.niveau === 'L1' || route.query.filiere === 'SG')
       ? true
       : String(ue.specialite || '') === String(route.query.specialite || '')
 
