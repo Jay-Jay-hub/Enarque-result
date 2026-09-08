@@ -107,7 +107,7 @@ const listUes = async (req, res, next) => {
 			LEFT JOIN specialites sp ON sp.id = u.specialite_id
 			JOIN semestres se ON se.id = u.semestre_id
 			${where}
-			ORDER BY u.id DESC
+			ORDER BY u.id ASC
 		`, values)
 		res.json(rows)
 	} catch (error) {
