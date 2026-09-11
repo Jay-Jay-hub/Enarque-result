@@ -29,6 +29,8 @@ const designers = [
     v-if="!isAdminRoute" 
     class="relative w-full bg-emerald-950/85 backdrop-blur-xl border-t border-white/10 text-white mt-auto shadow-2xl font-['Plus_Jakarta_Sans',sans-serif] overflow-hidden"
   >
+    <!--les pointillés qui scintillent!-->
+    <div class="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.4)_2px,transparent_2px)] bg-[size:32px_32px] animate-dots-blink pointer-events-none"></div>
     <!-- Effet de lueur subtil en haut du footer -->
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent"></div>
     <div class="absolute -top-24 -right-24 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
