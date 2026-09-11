@@ -12,7 +12,7 @@ const currentYear = computed(() => new Date().getFullYear())
 const designers = [
   {
     name: 'Thomas DEFODJI',
-    whatsapp: '2290114031558', // format international sans "+"
+    whatsapp: '2290147031558', // format international sans "+"
     email: 'thomasdefodji793@gmail.com'
   },
   {
