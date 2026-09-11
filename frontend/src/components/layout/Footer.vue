@@ -19,7 +19,7 @@ const designers = [
   {
     name: 'Fréjus DAGBA',
     whatsapp: '2290140141063',
-    email: 'frejus.dagba@example.com'
+    email: 'frejusdagba07@gmail.com'
   }
 ]
 </script>
